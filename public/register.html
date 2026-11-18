@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Регистрация — Bubbl</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2365C466'/%3E%3Cpath d='M46 31c0 7.7-6.7 14-15 14-2.5 0-4.9-.6-7-1.6L16 46l2.4-7.2C16.9 36.6 16 33.9 16 31c0-7.7 6.7-14 15-14s15 6.3 15 14z' fill='%23ffffff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/auth.css">
+  <link rel="stylesheet" href="/mobile.css">
+</head>
+<body class="auth-page">
+  <div class="profile-style-wrapper">
+    <h1 class="profile-style-heading">Регистрация в Bubbl</h1>
+
+    <div class="profile-style-card">
+      <form class="bubbl-form" id="registerForm">
+        <label for="avatarInput" class="profile-style-avatar" id="avatarPreview" title="Выбрать фото">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#65C466" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+        </label>
+        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+
+        <div class="profile-ios-group">
+          <div class="profile-ios-row">
+            <span class="profile-ios-label">Имя</span>
+            <input type="text" id="firstNameInput" required>
+          </div>
+
+          <div class="profile-ios-row">
+            <span class="profile-ios-label">Фамилия <span>(необязательно)</span></span>
+            <input type="text" id="lastNameInput">
+          </div>
+
+          <div class="profile-ios-row">
+            <span class="profile-ios-label">@username</span>
+            <input type="text" id="usernameInput" class="accent-text" required>
+          </div>
+
+          <div class="profile-ios-row">
+            <span class="profile-ios-label">Логин</span>
+            <input type="text" id="loginInput" autocomplete="username" required>
+          </div>
+
+          <div class="profile-ios-row">
+            <span class="profile-ios-label">Пароль</span>
+            <input type="password" id="passwordInput" autocomplete="new-password" required>
+          </div>
+        </div>
+
+        <button type="submit" class="profile-style-btn">Готово</button>
+        <div class="bubbl-error" id="errorMsg"></div>
+      </form>
+    </div>
+
+    <a href="/login.html" class="profile-bottom-link">Уже есть аккаунт? Войти</a>
+  </div>
+
+  <div class="bubbl-footer-copyright">BubildaProjects.co</div>
+
+  <script src="/avatar-cropper.js"></script>
+  <script>
+    let croppedAvatarBlob = null;
+
+    document.getElementById('avatarInput').addEventListener('change', (e) => {
+      const file = e.target.files.item(0);
+      if (!file) return;
+
+      if (typeof openAvatarCropper === 'function') {
+        openAvatarCropper(file, (croppedFile, previewUrl) => {
+          croppedAvatarBlob = croppedFile;
+          document.getElementById('avatarPreview').innerHTML = `<img src="${previewUrl}">`;
+        });
+      } else {
+        croppedAvatarBlob = file;
+        const url = URL.createObjectURL(file);
+        document.getElementById('avatarPreview').innerHTML = `<img src="${url}">`;
+      }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('errorMsg');
+      errEl.textContent = '';
+
+      const formData = new FormData();
+      formData.append('firstName', document.getElementById('firstNameInput').value.trim());
+      formData.append('lastName', document.getElementById('lastNameInput').value.trim());
+      formData.append('username', document.getElementById('usernameInput').value.trim());
+      formData.append('login', document.getElementById('loginInput').value.trim());
+      formData.append('password', document.getElementById('passwordInput').value);
+      if (croppedAvatarBlob) {
+        formData.append('avatar', croppedAvatarBlob, 'avatar.png');
+      }
+
+      try {
+        const res = await fetch('/api/register', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Ошибка регистрации';
+          return;
+        }
+
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
+        window.location.href = '/chat.html';
+      } catch (err) {
+        errEl.textContent = 'Не удалось подключиться к серверу';
+      }
+    });
+  </script>
+</body>
+</html>

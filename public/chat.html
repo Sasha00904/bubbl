@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bubbl</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%2365C466'/%3E%3Cpath d='M46 31c0 7.7-6.7 14-15 14-2.5 0-4.9-.6-7-1.6L16 46l2.4-7.2C16.9 36.6 16 33.9 16 31c0-7.7 6.7-14 15-14s15 6.3 15 14z' fill='%23ffffff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/theme.css">
+  <link rel="stylesheet" href="/profile-modal.css">
+  <link rel="stylesheet" href="/settings-modal.css">
+  <link rel="stylesheet" href="/media-voice.css">
+  <link rel="stylesheet" href="/photo-editor.css">
+  <link rel="stylesheet" href="/groups-ui.css">
+  <link rel="stylesheet" href="/chat-actions.css">
+  <link rel="stylesheet" href="/animations.css">
+  <link rel="stylesheet" href="/mobile.css">
+</head>
+<body class="chat-page">
+
+  <div class="sidebar">
+    <div class="profile-bar" onclick="openMyProfile()" title="Открыть профиль">
+      <div class="avatar" id="myAvatar"></div>
+      <div class="profile-info">
+        <div class="profile-name" id="myName"></div>
+        <div class="profile-user" id="myUsername"></div>
+      </div>
+    </div>
+
+    <div class="search-wrapper">
+      <span class="search-icon" style="display:flex; align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input type="text" id="userSearchInput" class="search-input" placeholder="Поиск по @username" autocomplete="off">
+      <button id="clearSearchBtn" class="search-clear">✕</button>
+    </div>
+
+    <div id="searchResults" style="display: none; overflow-y: auto; flex: 1;"></div>
+
+    <div id="chatList" style="overflow-y: auto; flex: 1;">
+      <div class="chat-item" id="tab-saved" onclick="openSavedChat()">
+        <div class="chat-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div>
+          <strong>Избранное</strong>
+          <small>Личные заметки и сохранённое</small>
+        </div>
+      </div>
+      <div id="privateDialogsList"></div>
+    </div>
+  </div>
+
+  <div class="chat-area">
+    <div class="empty-chat-state" id="emptyState">
+      <div class="empty-pill">Выберите чат, чтобы начать общение</div>
+    </div>
+
+    <div id="activeChatContainer" style="display: none; flex-direction: column; height: 100%;">
+      <div class="chat-header" id="chatHeader" style="cursor: pointer;"></div>
+
+      <div class="selection-toolbar" id="selectionToolbar">
+        <div class="selection-left">
+          <button type="button" class="tg-icon-btn" id="cancelSelectBtn" title="Отменить выделение">✕</button>
+          <span class="selection-count" id="selectionCountText">Выбрано: 1</span>
+        </div>
+        <div class="selection-actions">
+          <button type="button" class="sel-action-btn forward" id="bulkForwardBtn">Переслать (1)</button>
+          <button type="button" class="sel-action-btn delete" id="bulkDeleteBtn">Удалить (1)</button>
+        </div>
+      </div>
+
+      <div class="messages" id="messages"></div>
+
+      <div class="reply-preview-bar" id="replyPreviewBar">
+        <div class="reply-bar-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"></polyline><path d="M20 18v-2a4 4 0 0 0-4-4H4"></path></svg>
+        </div>
+        <img id="replyBarThumb" class="reply-bar-thumb" src="" alt="">
+        <div class="reply-preview-content">
+          <div class="reply-preview-author" id="replyAuthorLabel"></div>
+          <div class="reply-preview-text" id="replyTextLabel"></div>
+        </div>
+        <button type="button" class="reply-close-btn" id="cancelReplyBtn" title="Отменить ответ">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="input-area" id="blockedChatFooter" style="display: none; justify-content: space-between; align-items: center; padding: 14px 24px;">
+        <span style="font-size: 13.5px; color: #8e8e93;">Вы заблокировали этого пользователя</span>
+        <button type="button" id="unblockUserFooterBtn" style="padding: 8px 16px; border-radius: 12px; font-size: 13.5px;">Разблокировать</button>
+      </div>
+
+      <form class="input-area" id="form" style="align-items: center;">
+        <input type="file" id="mediaFileInput" accept="image/*,video/*" style="display: none;">
+        <button type="button" class="media-icon-btn" id="attachMediaBtn" title="Отправить фото или видео">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        </button>
+
+        <textarea id="input" rows="1" autocomplete="off" placeholder="Сообщение"></textarea>
+
+        <div class="recording-bar" id="recordingBar">
+          <button type="button" class="rec-cancel-icon" id="cancelRecBtn" title="Отменить запись">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          <span class="rec-live-dot"></span>
+          <div class="rec-waveform-live" id="recLiveWaveform"></div>
+          <span class="rec-timer" id="recTimerText">0:00</span>
+        </div>
+
+        <button type="button" class="media-icon-btn" id="voiceRecordBtn" title="Записать голосовое сообщение">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
+
+        <button type="submit" id="sendTextBtn" style="display:flex; align-items:center; justify-content:center; width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 1. Сокеты, шифрование, код-пароль и модальные окна профиля/настроек -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/e2ee-crypto.js"></script>
+  <script src="/passcode-lock.js"></script>
+  <script src="/avatar-cropper.js"></script>
+  <script src="/photo-crop-tool.js"></script>
+  <script src="/photo-brush-tool.js"></script>
+  <script src="/photo-editor.js"></script>
+  <script src="/media-preview-modal.js"></script>
+  <script src="/blacklist-manager.js"></script>
+  <script src="/profile-edit.js"></script>
+  <script src="/settings-core.js"></script>
+  <script src="/settings-submodals.js"></script>
+  <script src="/settings-modal.js"></script>
+  <script src="/profile-modal.js"></script>
+
+  <!-- 2. Модули сообщений, поиска, медиа, шапки и сайдбара -->
+  <script src="/saved-messages.js"></script>
+  <script src="/forward-modal.js"></script>
+  <script src="/multi-select.js"></script>
+  <script src="/message-extras.js"></script>
+  <script src="/context-menu.js"></script>
+  <script src="/search-users.js"></script>
+  <script src="/voice-player.js"></script>
+  <script src="/media-voice.js"></script>
+  <script src="/message-renderer.js"></script>
+  <script src="/status-animator.js"></script>
+  <script src="/dialog-context-menu.js"></script>
+  <script src="/chat-sidebar.js"></script>
+  <script src="/chat-header.js"></script>
+  <script src="/chat-sockets.js"></script>
+  <script src="/chat-actions-handler.js"></script>
+
+  <!-- 3. Инициализация чата, модули групп и мобильная навигация -->
+  <script src="/chat.js"></script>
+  <script src="/group-fab.js"></script>
+  <script src="/group-system-events.js"></script>
+  <script src="/group-create-modal.js"></script>
+  <script src="/group-admin-actions.js"></script>
+  <script src="/group-info-modal.js"></script>
+  <script src="/mobile-nav.js"></script>
+</body>
+</html>

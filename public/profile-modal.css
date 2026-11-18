@@ -1,0 +1,165 @@
+.tg-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 1350;
+  align-items: center;
+  justify-content: center;
+}
+
+.tg-modal-overlay.active {
+  display: flex;
+}
+
+.tg-profile-card {
+  width: 360px;
+  max-height: 88vh;
+  background: #1c1c1e;
+  color: #f5f5f7;
+  border-radius: 26px;
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 28px 75px rgba(0, 0, 0, 0.88),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.tg-profile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.tg-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.07);
+  color: #f5f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.tg-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.tg-icon-btn:active {
+  transform: scale(0.93);
+}
+
+/* iOS сгруппированный контейнер строк в профиле и настройках */
+.tg-ios-group {
+  width: 100%;
+  background: #262629;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tg-info-row {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tg-info-row:last-child {
+  border-bottom: none;
+}
+
+.tg-info-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #8e8e93;
+}
+
+.tg-edit-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 14.5px;
+  outline: none;
+}
+
+.tg-save-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent, #65C466);
+  color: var(--accent-dark-text, #ffffff);
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.tg-save-btn:hover {
+  filter: brightness(1.06);
+}
+
+.tg-save-btn:active {
+  transform: scale(0.98);
+}
+
+/* Кнопка "Заблокировать" в стиле кнопки "Выйти из аккаунта" */
+#blockUserProfileBtn,
+.tg-block-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 69, 58, 0.22);
+  background: rgba(255, 69, 58, 0.14);
+  color: #ff453a;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+#blockUserProfileBtn:hover,
+.tg-block-btn:hover {
+  background: #ff453a;
+  color: #ffffff;
+}
+
+#blockUserProfileBtn:active,
+.tg-block-btn:active {
+  transform: scale(0.98);
+}
+
+/* Кнопка замочка сквозного шифрования в шапке профиля собеседника */
+.profile-e2ee-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(101, 196, 102, 0.28);
+  background: rgba(101, 196, 102, 0.12);
+  color: var(--accent, #65C466);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+
+.profile-e2ee-btn:hover {
+  background: rgba(101, 196, 102, 0.22);
+}
+
+.profile-e2ee-btn:active {
+  transform: scale(0.93);
+}

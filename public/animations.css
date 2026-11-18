@@ -1,0 +1,186 @@
+/* Единые кривые плавности iOS 26 */
+:root {
+  --ease-ios: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.22, 1.15, 0.36, 1);
+}
+
+/* 1. Плавное появление модальных окон и затемнения фона */
+.tg-modal-overlay,
+.settings-overlay,
+.bubbl-fwd-overlay,
+.ios-dialog-overlay,
+.media-preview-overlay,
+.cropper-overlay,
+.editor-overlay {
+  transition: opacity 0.22s var(--ease-ios), backdrop-filter 0.22s var(--ease-ios);
+}
+
+.tg-modal-overlay.active .tg-profile-card,
+.tg-modal-overlay.active .ios-group-card,
+.settings-overlay.active .settings-card,
+.settings-overlay.active .ios-group-card,
+.bubbl-fwd-overlay.active .bubbl-fwd-card,
+.ios-dialog-overlay.active .ios-dialog-card,
+.media-preview-overlay.active .media-preview-card {
+  animation: modalSpringIn 0.26s var(--ease-spring) forwards;
+}
+
+@keyframes modalSpringIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 2. Контекстные меню и выпадающее меню кнопки "+" */
+.apple-context-menu,
+.fab-popover-menu {
+  transform-origin: top right;
+  animation: contextPopIn 0.16s var(--ease-spring) forwards;
+}
+
+.fab-popover-menu {
+  transform-origin: bottom right;
+}
+
+@keyframes contextPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 3. Плавное переключение активного чата и экрана сообщений */
+#activeChatContainer {
+  animation: chatContainerFade 0.2s var(--ease-ios);
+}
+
+.empty-chat-state {
+  animation: chatContainerFade 0.25s var(--ease-ios);
+}
+
+@keyframes chatContainerFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 4. Тактильный отклик на клики по элементам списка, кнопкам и иконкам */
+.chat-item,
+.profile-bar,
+.settings-row.clickable,
+.apple-context-item,
+.bubbl-fwd-row,
+.forward-target-row,
+.group-member-pick-row {
+  transition: background-color 0.16s var(--ease-ios), color 0.16s var(--ease-ios), transform 0.12s var(--ease-ios);
+}
+
+.chat-item:active,
+.profile-bar:active,
+.settings-row.clickable:active,
+.apple-context-item:active,
+.bubbl-fwd-row:active,
+.group-member-pick-row:active {
+  transform: scale(0.98);
+}
+
+.tg-icon-btn,
+.media-icon-btn,
+.grp-tile-btn,
+.ios-nav-btn,
+.sel-action-btn,
+.tg-save-btn,
+.ios-dialog-btn {
+  transition: background-color 0.16s var(--ease-ios), color 0.16s var(--ease-ios), filter 0.16s, transform 0.12s var(--ease-spring);
+}
+
+.tg-icon-btn:active,
+.media-icon-btn:active,
+.grp-tile-btn:active,
+.ios-nav-btn:active,
+.sel-action-btn:active,
+.tg-save-btn:active,
+.ios-dialog-btn:active {
+  transform: scale(0.93);
+}
+
+/* 5. Плавное появление панели ответа / редактирования и мультивыделения */
+.reply-preview-bar.active {
+  animation: slideUpBar 0.18s var(--ease-ios);
+}
+
+@keyframes slideUpBar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selection-toolbar.active {
+  animation: slideDownBar 0.18s var(--ease-ios);
+}
+
+@keyframes slideDownBar {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 6. Плавный вход сообщений и кружков выделения */
+.msg-row {
+  transition: transform 0.2s var(--ease-ios), opacity 0.18s var(--ease-ios);
+}
+
+body.selection-mode .msg-select-circle {
+  animation: circlePopIn 0.18s var(--ease-spring);
+}
+
+@keyframes circlePopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 7. Плавное раскрытие поиска и полосы записи ГС */
+.recording-bar.active {
+  animation: fadeScaleIn 0.18s var(--ease-ios);
+}
+
+@keyframes fadeScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

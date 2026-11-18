@@ -1,0 +1,202 @@
+.apple-ed-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, #16161a 0%, #09090b 100%);
+  z-index: 3200;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f5f5f7;
+  user-select: none;
+  animation: fadeOverlayIn 0.18s ease-out;
+}
+.apple-ed-overlay.active { display: flex; }
+
+/* Плавающая верхняя панель в стиле macOS / iOS 26 */
+.apple-ed-topbar {
+  margin: 16px auto 0;
+  width: calc(100% - 48px);
+  max-width: 960px;
+  height: 52px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1c1c1f;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  z-index: 10;
+}
+.apple-ed-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #f5f5f7;
+}
+.apple-ed-top-btn {
+  background: transparent;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #98989f;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 11px;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+.apple-ed-top-btn:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.apple-ed-top-btn:active { transform: scale(0.96); }
+
+.apple-ed-top-btn.done {
+  background: var(--accent, #65C466);
+  color: var(--accent-dark-text, #0a180a);
+  font-weight: 600;
+  padding: 7px 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.apple-ed-top-btn.done:hover { filter: brightness(1.06); }
+
+/* Широкая центральная рабочая область */
+.apple-ed-workspace {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 28px;
+  overflow: hidden;
+  position: relative;
+}
+.apple-ed-canvas-wrap {
+  position: relative;
+  display: inline-flex;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 32px 85px rgba(0, 0, 0, 0.92),
+    0 8px 24px rgba(0, 0, 0, 0.6);
+}
+.apple-ed-canvas-wrap canvas {
+  display: block;
+  max-width: 86vw;
+  max-height: 68vh;
+}
+
+/* Рамка свободной обрезки */
+.apple-crop-box {
+  display: none;
+  position: absolute;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+  cursor: move;
+}
+.apple-crop-box.active { display: block; }
+
+.apple-crop-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.22) 1px, transparent 1px);
+  background-size: 33.33% 33.33%;
+  pointer-events: none;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+  transition: transform 0.12s;
+}
+.crop-handle:hover { transform: scale(1.2); }
+.crop-handle.nw { top: -7px; left: -7px; cursor: nwse-resize; }
+.crop-handle.ne { top: -7px; right: -7px; cursor: nesw-resize; }
+.crop-handle.sw { bottom: -7px; left: -7px; cursor: nesw-resize; }
+.crop-handle.se { bottom: -7px; right: -7px; cursor: nwse-resize; }
+
+/* Парящий нижний док инструментов (без растягивания на весь экран) */
+.apple-ed-bottom-dock {
+  padding: 0 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  z-index: 10;
+}
+
+/* Парящая капсула настроек кисти */
+.apple-brush-bar {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: #1c1c1f;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.78),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  animation: smoothMsgFadeIn 0.16s ease-out;
+}
+.apple-brush-bar.active { display: flex; }
+
+.brush-color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  transition: transform 0.14s cubic-bezier(0.22, 1.15, 0.36, 1), border-color 0.14s;
+}
+.brush-color-dot:hover { transform: scale(1.12); }
+.brush-color-dot.active {
+  border-color: #ffffff;
+  transform: scale(1.22);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25), 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Главная плавающая капсула инструментов */
+.apple-tools-capsule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1c1c1f;
+  padding: 6px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.82),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.apple-tool-pill {
+  background: transparent;
+  border: none;
+  color: #d1d1d6;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+.apple-tool-pill:hover { background: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.apple-tool-pill:active { transform: scale(0.96); }
+.apple-tool-pill.active {
+  background: var(--accent, #65C466);
+  color: var(--accent-dark-text, #0a180a);
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
